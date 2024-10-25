@@ -1,0 +1,30 @@
+dbt_training_dw:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: '/Users/matsuiakira/Development/Test/dbt/dbt_training/dbt_training.duckdb'
+      extensions:
+        - httpfs
+        - parquet
+        # settings:
+        #   s3_region: my-aws-region
+        #   s3_access_key_id: "{{ env_var('S3_ACCESS_KEY_ID') }}"
+        #   s3_secret_access_key: "{{ env_var('S3_SECRET_ACCESS_KEY') }}"
+    dbname: dbt_training
+    schema: public
+
+
+dbt_project:
+  outputs:
+    dev:
+      type: duckdb
+      path: "md:my_db?motherduck_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFraXJhQHNhbmdvLXRlY2guY29tIiwic2Vzc2lvbiI6ImFraXJhLnNhbmdvLXRlY2guY29tIiwicGF0IjoiN28wZmdtTEo3REFqV0VnWjV4TVVwUGhUREdhMVRZaGRiMUpYeExGYW9vSSIsInVzZXJJZCI6Ijc2ZmQ2YTFlLWE2NGEtNDhhNi1iMGE0LWI4MjFlODRmZWQyOCIsImlzcyI6Im1kX3BhdCIsImlhdCI6MTcyOTgyOTk1NH0.Z1FO2MLAiYD0uNg5aVOu75NyIDy5ZbfM8Tw9yGBxxRw"
+      threads: 1
+
+    prod:
+      type: duckdb
+      path: prod.duckdb
+      threads: 4
+
+  target: dev
