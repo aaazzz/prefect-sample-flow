@@ -1,5 +1,14 @@
 from prefect import flow
+import duckdb
 
 @flow(log_prints=True)
 def my_flow():
-    print("I'm a flow from a GitHub repo! And I've changed!")
+    df = duckdb.sql("SELECT 42")
+    print(df)
+
+
+if __name__ == "__main__":
+    my_flow.serve(
+        name="run-on-local",
+        interval=60
+    )
