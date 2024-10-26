@@ -1,6 +1,7 @@
 import os
 from prefect import flow, task
 from prefect_dbt import DbtCoreOperation
+from prefect.logging import get_run_logger
 
 @task
 def run_dbt(use_block: bool = False):
@@ -21,7 +22,9 @@ def run_dbt(use_block: bool = False):
 
 @task
 def get_pwd():
-        print ("Current directory:" , os.getcwd())
+    logger = get_run_logger()
+    currentDir = os.getcwd()
+    logger.info("Current directory: " + currentDir)
 
 
 @flow
