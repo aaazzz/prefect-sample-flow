@@ -4,8 +4,10 @@ from prefect_dbt import DbtCoreOperation
 from prefect.logging import get_run_logger
 
 @task
-def run_dbt(use_block: bool = False, project_dir: str = "", profiles_dir: str = ""):
+def run_dbt(check="foo", use_block: bool = False, project_dir: str = "", profiles_dir: str = ""):
     logger = get_run_logger()
+    logger.info(check)
+
     if use_block:
         dbt_op = DbtCoreOperation.load("dbt-code-operation")
         result = dbt_op.run()
@@ -36,6 +38,7 @@ def my_flow(use_block: bool = False):
     profiles_dir = current_dir + '/dbt'
 
     run_dbt(
+        check="bar",
         use_block=use_block,
         project_dir=project_dir,
         profiles_dir=profiles_dir
