@@ -5,7 +5,9 @@ from prefect.logging import get_run_logger
 
 @task
 def run_dbt(use_block: bool = False):
+    logger = get_run_logger()
     if use_block:
+        logger.info("dbt run here!")
         # Remote
         # dbt_op = DbtCoreOperation.load("dbt-code-operation")
         # result = dbt_op.run()
