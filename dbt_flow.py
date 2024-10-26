@@ -4,38 +4,42 @@ from prefect_dbt import DbtCoreOperation
 from prefect.logging import get_run_logger
 
 @task
-def run_dbt(use_block: bool = False):
+def run_dbt(use_block: bool = False, project_dir: str = "", profiles_dir: str = ""):
     logger = get_run_logger()
     if use_block:
-        logger.info("dbt run here!")
-        # Remote
-        # dbt_op = DbtCoreOperation.load("dbt-code-operation")
-        # result = dbt_op.run()
+        dbt_op = DbtCoreOperation.load("dbt-code-operation")
+        result = dbt_op.run()
 
     else:
-        # Local
         dbt_op = DbtCoreOperation(
             commands=["dbt run"],
-            project_dir="./flow/dbt/dbt_project",
-            profiles_dir="./flow/dbt"
+            project_dir=project_dir,
+            profiles_dir=profiles_dir
         )
         result = dbt_op.run()
+
     return result
 
 @task
-def get_pwd():
+def get_pwd() -> str:
     logger = get_run_logger()
-    currentDir = os.getcwd()
-    logger.info("Current directory: " + currentDir)
-    logger.info("Current directory's files: ")
-    for f in os.listdir(currentDir):
-        logger.info(" - " + f)
+    current_dir = os.getcwd()
+    logger.info("Current directory: " + current_dir)
+
+    return current_dir
 
 
 @flow
 def my_flow(use_block: bool = False):
-    get_pwd()
-    run_dbt(use_block=use_block)
+    current_dir = get_pwd()
+    project_dir = current_dir + '/dbt/dbt_project'
+    profiles_dir = current_dir + '/dbt'
+
+    run_dbt(
+        use_block=use_block,
+        project_dir=project_dir,
+        profiles_dir=profiles_dir
+    )
 
 
 if __name__ == "__main__":
@@ -44,3 +48,4 @@ if __name__ == "__main__":
         interval=10,
         parameters={"use_block": False}
      )
+
