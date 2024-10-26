@@ -27,6 +27,9 @@ def get_pwd():
     logger = get_run_logger()
     currentDir = os.getcwd()
     logger.info("Current directory: " + currentDir)
+    logger.info("Current directory's files: ")
+    for f in os.listdir(currentDir):
+        logger.info(" - " + f)
 
 
 @flow
