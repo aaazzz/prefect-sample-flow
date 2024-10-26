@@ -7,8 +7,8 @@ from prefect.logging import get_run_logger
 def run_dbt(use_block: bool = False):
     if use_block:
         # Remote
-        dbt_op = DbtCoreOperation.load("dbt-code-operation")
-        result = dbt_op.run()
+        # dbt_op = DbtCoreOperation.load("dbt-code-operation")
+        # result = dbt_op.run()
 
     else:
         # Local
