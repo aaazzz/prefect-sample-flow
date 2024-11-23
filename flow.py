@@ -1,15 +1,8 @@
 from prefect import flow
-from typing import Optional
-
 
 @flow(log_prints=True)
-def my_flow(date: Optional[datetime] = None):
-    print("hey hey!")
-    logger = get_run_logger()
-    logger.info(date)
-    if date is None:
-        date = datetime.now(timezone.utc)
-    print(f"It was {date.strftime('%A')} on {date.isoformat()}")
+def my_flow():
+    print('hello!')
 
 
 if __name__ == "__main__":
