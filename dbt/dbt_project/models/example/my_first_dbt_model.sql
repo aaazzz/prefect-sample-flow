@@ -4,10 +4,9 @@ with order_selected as (
 
     select
         order_id as id,
-        user_id as uid,
         order_date
 
-    from orders2
+    from staging.orders
 )
 
 select * from order_selected

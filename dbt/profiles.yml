@@ -1,20 +1,3 @@
-dbt_training_dw:
-  target: dev
-  outputs:
-    dev:
-      type: duckdb
-      path: '/Users/matsuiakira/Development/Test/dbt/dbt_training/dbt_training.duckdb'
-      extensions:
-        - httpfs
-        - parquet
-        # settings:
-        #   s3_region: my-aws-region
-        #   s3_access_key_id: "{{ env_var('S3_ACCESS_KEY_ID') }}"
-        #   s3_secret_access_key: "{{ env_var('S3_SECRET_ACCESS_KEY') }}"
-    dbname: dbt_training
-    schema: public
-
-
 dbt_project:
   outputs:
     dev:
