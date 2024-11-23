@@ -4,6 +4,8 @@ from typing import Optional
 
 @flow(log_prints=True)
 def my_flow(date: Optional[datetime] = None):
+    logger = get_run_logger()
+    logger.info(date)
     if date is None:
         date = datetime.now(timezone.utc)
     print(f"It was {date.strftime('%A')} on {date.isoformat()}")
