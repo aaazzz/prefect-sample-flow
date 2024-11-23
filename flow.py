@@ -1,12 +1,13 @@
-from prefect import flow
+from prefect import flow, task
 
-@flow(log_prints=True)
-def my_flow():
-    print('hello!')
+@task(log_prints=True)
+def say_hello(name: str):
+    print(f"Hello, {name}!")
 
+@flow
+def my_flow(names: list[str]):
+    for name in names:
+        say_hello(name)
 
 if __name__ == "__main__":
-    my_flow.serve(
-        name="run-on-local",
-        interval=60
-    )
+    hello_universe(['Marvin', 'Trillian', 'Ford'])
