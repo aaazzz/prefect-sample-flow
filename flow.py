@@ -4,6 +4,7 @@ from typing import Optional
 
 @flow(log_prints=True)
 def my_flow(date: Optional[datetime] = None):
+    print("hey hey!")
     logger = get_run_logger()
     logger.info(date)
     if date is None:
