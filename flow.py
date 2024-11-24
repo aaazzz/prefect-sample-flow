@@ -44,7 +44,7 @@ def upload_data(df: pd.DataFrame, bucket: str, key: str):
     client.put_object(Bucket=bucket, Key=key, Body=csv_buffer.getvalue())
 
 @flow
-def preprocess_csv(backet: str, key: str):
+def preprocess_csv(bucket: str, key: str):
     data = get_data(bucket, key)
     df = pd.read_csv(StringIO(data), low_memory=False)
     df = rename_columns(df)
