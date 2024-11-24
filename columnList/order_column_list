@@ -22,7 +22,7 @@ SKU名称,sku_name
 郵便番号,postal_code
 お届け先住所1（都道府県）,delivery_address_prefecture
 お届け先住所2（市区町村番地）,delivery_address_city_street
-お届け先住所3（アパートマンショ）,delivery_address_building
+お届け先住所3（アパートマンショ,delivery_address_building
 荷受人,recipient_name
 届け先フリガナ,recipient_name_kana
 送り主電話番号,sender_phone_number
@@ -47,7 +47,7 @@ SKU名称,sku_name
 注文者郵便番号,orderer_postal_code
 注文者住所1（都道府県）,orderer_address_prefecture
 注文者住所2（市区町村番地）,orderer_address_city_street
- 届け先住所3（アパートマンショ,orderer_address_building
+注文者住所3（アパートマンション名）,orderer_address_building
 注文者氏名,orderer_name
 注文者氏名カナ,orderer_name_kana
 生年月日,birth_date
