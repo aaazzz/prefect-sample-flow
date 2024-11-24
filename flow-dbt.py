@@ -3,6 +3,7 @@ from prefect import flow, task
 from prefect_dbt import DbtCoreOperation
 from prefect.logging import get_run_logger
 
+
 @task
 def run_dbt(use_block: bool = False, project_dir: str = "", profiles_dir: str = ""):
     if use_block:
@@ -11,13 +12,12 @@ def run_dbt(use_block: bool = False, project_dir: str = "", profiles_dir: str = 
 
     else:
         dbt_op = DbtCoreOperation(
-            commands=["dbt run"],
-            project_dir=project_dir,
-            profiles_dir=profiles_dir
+            commands=["dbt run"], project_dir=project_dir, profiles_dir=profiles_dir
         )
         result = dbt_op.run()
 
     return result
+
 
 @task
 def get_pwd() -> str:
@@ -31,20 +31,11 @@ def get_pwd() -> str:
 @flow
 def my_flow(use_block: bool = False):
     current_dir = get_pwd()
-    project_dir = current_dir + '/dbt/dbt_project'
-    profiles_dir = current_dir + '/dbt'
+    project_dir = current_dir + "/dbt/dbt_project"
+    profiles_dir = current_dir + "/dbt"
 
-    run_dbt(
-        use_block=use_block,
-        project_dir=project_dir,
-        profiles_dir=profiles_dir
-    )
+    run_dbt(use_block=use_block, project_dir=project_dir, profiles_dir=profiles_dir)
 
 
 if __name__ == "__main__":
-    my_flow.serve(
-        name="run-dbt-on-local",
-        interval=10,
-        parameters={"use_block": False}
-     )
-
+    my_flow.serve(name="run-dbt-on-local", interval=10, parameters={"use_block": False})

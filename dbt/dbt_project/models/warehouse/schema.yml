@@ -1,0 +1,12 @@
+version: 2
+
+models:
+  - name: orders
+    description: "unique orders"
+    columns:
+      - name: order_number
+        description: "The primary key for this table"
+        data_tests:
+          - unique
+          - not_null
+
