@@ -6,9 +6,19 @@ import boto3
 import pandas as pd
 from io import StringIO
 
+key_block = Secret.load("aws-secret-access-key")
+key_id_block = Secret.load("aws-access-key-id")
+client = boto3.client(
+    "s3",
+    aws_access_key_id=key_id_block.get(),
+    aws_secret_access_key=key_block.get(),
+    region_name="ap-northeast-1",
+)
+
 
 def get_file_path(file_path_name=None):
     return os.path.join(os.path.dirname(__file__), file_path_name)
+
 
 def rename_column(df, renamed_from, renamed_to):
     """
@@ -17,11 +27,12 @@ def rename_column(df, renamed_from, renamed_to):
     """
     df.rename(columns={renamed_from: renamed_to}, inplace=True)
 
+
 @task(log_prints=True)
-def get_data(client, bucket: str, key: str):
+def get_data(bucket: str, key: str):
     print(f"Getting data from {bucket}/{key}...")
-    response = client.get_object( Bucket=bucket, Key=key)
-    body = response['Body'].read().decode('CP932')
+    response = client.get_object(Bucket=bucket, Key=key)
+    body = response["Body"].read().decode("CP932")
     return body
 
 
@@ -37,32 +48,27 @@ def rename_columns(df: pd.DataFrame):
 
     return df
 
+
 @task(log_prints=True)
-def upload_data(client, df: pd.DataFrame, bucket: str, key: str):
+def upload_data(df: pd.DataFrame, bucket: str, key: str):
     print(f"Uploading data to {bucket}/{key}...")
     csv_buffer = StringIO()
     df.to_csv(csv_buffer, index=False)
     client.put_object(Bucket=bucket, Key=key, Body=csv_buffer.getvalue())
 
+
 @flow
 def preprocess_csv(bucket: str, key: str):
-    key_block = Secret.load("aws-secret-access-key")
-    key_id_block = Secret.load("aws-access-key-id")
-    client = boto3.client('s3', 
-        aws_access_key_id=key_id_block.get(),
-        aws_secret_access_key=key_block.get(),
-        region_name="ap-northeast-1"
-    )
-
-    data = get_data(client, bucket, key)
+    data = get_data(bucket, key)
     df = pd.read_csv(StringIO(data), low_memory=False)
     df = rename_columns(df)
 
     print(df.head())
-    upload_data(client, df, bucket, f"lake/{key}")
-    print('Done')
+    upload_data(df, bucket, f"lake/{key}")
+    print("Done")
+
 
 if __name__ == "__main__":
-    bucket = 'cdkstack-csvbucketadda1e74-xwwsrvxkbhl4'
-    key = '2024-11-24/orders.csv'
+    bucket = "cdkstack-csvbucketadda1e74-xwwsrvxkbhl4"
+    key = "2024-11-24/orders.csv"
     preprocess_csv(bucket, key)
