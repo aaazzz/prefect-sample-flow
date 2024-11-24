@@ -17,6 +17,9 @@ client = boto3.client(
 
 
 def get_file_path(file_path_name=None):
+    if file_path_name is None:
+        return os.path.dirname(__file__)
+
     return os.path.join(os.path.dirname(__file__), file_path_name)
 
 
