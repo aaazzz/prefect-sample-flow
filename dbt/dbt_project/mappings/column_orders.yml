@@ -1,0 +1,4 @@
+columns:
+  "注文ID": "order_id"
+  "注文日": "order_date"
+  "顧客名": "customer_name"

@@ -9,4 +9,5 @@ with order_selected as (
     from staging.orders
 )
 
-select * from order_selected
+--select * from order_selected
+select * from read_csv_auto('./data/seed/orders.csv')
