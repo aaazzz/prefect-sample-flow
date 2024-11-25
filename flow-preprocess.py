@@ -5,6 +5,7 @@ import os
 import boto3
 import pandas as pd
 from io import StringIO
+from charset_normalizer import detect
 
 key_block = Secret.load("aws-secret-access-key")
 key_id_block = Secret.load("aws-access-key-id")
@@ -35,8 +36,16 @@ def rename_column(df, renamed_from, renamed_to):
 def get_data(bucket: str, key: str):
     print(f"Getting data from {bucket}/{key}...")
     response = client.get_object(Bucket=bucket, Key=key)
-    body = response["Body"].read().decode("CP932")
-    return body
+    body = response["Body"].read()
+
+    detected = detect(body)
+    encoding = detected["encoding"]
+    if encoding:
+        decoded_body = body.decode(encoding)
+    else:
+        decoded_body = body.decode("utf-8", errors="replace")
+
+    return decoded_body
 
 
 @task(log_prints=True)
@@ -62,10 +71,16 @@ def upload_data(df: pd.DataFrame, bucket: str, key: str):
 
 @flow
 def preprocess_csv(bucket: str, key: str):
-    data = get_data(bucket, key)
-    df = pd.read_csv(StringIO(data), low_memory=False)
-    df = rename_columns(df)
+    body = get_data(bucket, key)
 
+    # skip if the row is bad
+    df = pd.read_csv(
+        StringIO(body),
+        low_memory=False,
+        on_bad_lines="warn",
+    )
+
+    df = rename_columns(df)
     print(df.head())
     upload_data(df, bucket, f"lake/{key}")
     print("Done")
