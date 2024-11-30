@@ -32,6 +32,20 @@ def rename_column(df, renamed_from, renamed_to):
     df.rename(columns={renamed_from: renamed_to}, inplace=True)
 
 
+def validate_date_column(df, column_name, date_format="%Y/%m/%d"):
+    """
+    日付列を検証して、不正な日付を含む行を除外する。
+    :param df: pandas DataFrame
+    :param column_name: 日付を検証する列名
+    :param date_format: 日付のフォーマット (デフォルトは '%Y/%m/%d')
+    :return: 不正な日付をNaTに変換したDataFrame
+    """
+    df[column_name] = pd.to_datetime(
+        df[column_name], format=date_format, errors="coerce"
+    )
+    return df
+
+
 @task(log_prints=True)
 def get_data(bucket: str, key: str):
     print(f"Getting data from {bucket}/{key}...")
@@ -62,6 +76,12 @@ def rename_columns(df: pd.DataFrame):
 
 
 @task(log_prints=True)
+def preprocess_date(df: pd.DataFrame):
+    df = validate_date_column(df, "birth_date")
+    return df
+
+
+@task(log_prints=True)
 def upload_data(df: pd.DataFrame, bucket: str, key: str):
     print(f"Uploading data to {bucket}/{key}...")
     csv_buffer = StringIO()
@@ -81,7 +101,9 @@ def preprocess_csv(bucket: str, key: str):
     )
 
     df = rename_columns(df)
+    df = preprocess_date(df)
     print(df.head())
+
     upload_data(df, bucket, f"lake/{key}")
     print("Done")
 

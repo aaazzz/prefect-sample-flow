@@ -5,7 +5,7 @@ from prefect.logging import get_run_logger
 
 
 @task
-def run_dbt(use_block: bool = False, project_dir: str = "", profiles_dir: str = ""):
+def run_dbt(use_block: bool = False, project_dir=None, profiles_dir=None):
     if use_block:
         dbt_op = DbtCoreOperation.load("dbt-code-operation")
         result = dbt_op.run()
